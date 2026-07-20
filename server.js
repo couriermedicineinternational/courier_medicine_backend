@@ -8,9 +8,6 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middlewares/errorHandler');
 const AppError = require('./utils/AppError');
 
-const rateLimit = require('express-rate-limit');
-const mongoSanitize = require('express-mongo-sanitize');
-
 // Connect to Database
 connectDB();
 
@@ -36,35 +33,9 @@ const privacyPolicyRoutes = require('./routes/privacyPolicyRoutes');
 
 const app = express();
 
-// Body parser with size limits to prevent large payload attacks
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
-// Sanitize MongoDB inputs against NoSQL injection attacks
-app.use(mongoSanitize());
-
-// Set security headers
-app.use(helmet());
-
-// Global Rate Limiter
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300, // limit each IP to 300 requests per windowMs
-  message: { success: false, error: 'Too many requests, please try again after 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-app.use('/api/', apiLimiter);
-
-// Stricter Rate Limiter for Login route to protect against brute-force attacks
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 15, // limit each IP to 15 login attempts per windowMs
-  message: { success: false, error: 'Too many login attempts. Please try again after 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-app.use('/api/auth/login', loginLimiter);
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -73,10 +44,8 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
 
-// Enable CORS with secure restricted origins
-const allowedOrigins = process.env.CORS_ORIGIN 
-  ? process.env.CORS_ORIGIN.split(',') 
-  : ['http://localhost:3000', 'http://localhost:5173'];
+// Enable CORS
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000', 'http://localhost:5173'];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -84,10 +53,10 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     
     const isAllowed = allowedOrigins.includes(origin) || 
-                      (process.env.NODE_ENV !== 'production' && (
-                        origin.startsWith('http://localhost:') || 
-                        origin.startsWith('http://192.168.')
-                      ));
+                      origin.endsWith('.vercel.app') || 
+                      origin.endsWith('.run.app') || 
+                      origin.startsWith('http://localhost:') || 
+                      origin.startsWith('http://192.168.');
                       
     if (isAllowed) {
       callback(null, true);
@@ -99,6 +68,9 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
+
+// Set security headers
+app.use(helmet());
 
 // Mount routers
 app.use('/api/auth', authRoutes);

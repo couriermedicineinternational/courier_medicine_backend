@@ -5,13 +5,13 @@ const {
   getAboutSectionsAdmin, 
   updateAboutSection 
 } = require('../controllers/aboutController');
-const { protect, authorize } = require('../middlewares/auth');
+const { protect } = require('../middlewares/auth');
 
 // Public route
 router.get('/', getAboutSections);
 
 // Protected routes (Admin only)
-router.get('/admin', protect, authorize('superadmin', 'admin'), getAboutSectionsAdmin);
-router.put('/:key', protect, authorize('superadmin', 'admin'), updateAboutSection);
+router.get('/admin', protect, getAboutSectionsAdmin);
+router.put('/:key', protect, updateAboutSection);
 
 module.exports = router;

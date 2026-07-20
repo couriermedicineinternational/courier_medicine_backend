@@ -4,12 +4,12 @@ const {
   getPrivacyPolicy,
   updatePrivacyPolicy,
 } = require('../controllers/privacyPolicyController');
-const { protect, authorize } = require('../middlewares/auth');
+const { protect } = require('../middlewares/auth');
 
 // Public route
 router.get('/', getPrivacyPolicy);
 
 // Protected route (Admin/Superadmin only)
-router.put('/', protect, authorize('superadmin', 'admin'), updatePrivacyPolicy);
+router.put('/', protect, updatePrivacyPolicy);
 
 module.exports = router;
