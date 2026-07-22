@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const BlogPost = require('../models/BlogPost');
 const BlogHeader = require('../models/BlogHeader');
 const AppError = require('../utils/AppError');
@@ -52,19 +53,30 @@ exports.getBlogs = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Get single blog by slug and increment views (Public)
+// @desc    Get single blog by slug or _id and increment views (Public)
 // @route   GET /api/blogs/:slug
 // @access  Public
 exports.getBlogBySlug = asyncHandler(async (req, res, next) => {
+  const param = req.params.slug;
+  const isObjectId = mongoose.Types.ObjectId.isValid(param);
+
+  const filter = {
+    isDeleted: false,
+    $or: [
+      { slug: param.toLowerCase() },
+      ...(isObjectId ? [{ _id: param }] : [])
+    ]
+  };
+
   // Find blog
   const blog = await BlogPost.findOneAndUpdate(
-    { slug: req.params.slug.toLowerCase(), isDeleted: false },
+    filter,
     { $inc: { views: 1 } },
     { new: true }
   );
 
   if (!blog) {
-    return next(new AppError(`Blog not found with slug of ${req.params.slug}`, 404));
+    return next(new AppError(`Blog not found with identifier of ${param}`, 404));
   }
 
   res.status(200).json({
