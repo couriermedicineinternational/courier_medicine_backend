@@ -55,6 +55,7 @@ const corsOptions = {
     const isAllowed = allowedOrigins.includes(origin) || 
                       origin.endsWith('.vercel.app') || 
                       origin.endsWith('.run.app') || 
+                      origin.includes('couriermedicines.com') || 
                       origin.startsWith('http://localhost:') || 
                       origin.startsWith('http://192.168.');
                       
