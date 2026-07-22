@@ -42,7 +42,9 @@ exports.getBlogs = asyncHandler(async (req, res, next) => {
 
   // Pagination
   const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 10;
+  const isAll = req.query.all === 'true';
+  const defaultLimit = isAll ? 1000 : 10;
+  const limit = parseInt(req.query.limit, 10) || defaultLimit;
   const skip = (page - 1) * limit;
 
   const total = await BlogPost.countDocuments(filter);
