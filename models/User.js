@@ -81,8 +81,8 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
 // Instance method — generate a signed JWT token
 // ---------------------------------------------------------------------------
 UserSchema.methods.getSignedJwtToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET || 'courier-med-secret-key-2026-change-in-production', {
+    expiresIn: process.env.JWT_EXPIRE || '7d',
   });
 };
 
