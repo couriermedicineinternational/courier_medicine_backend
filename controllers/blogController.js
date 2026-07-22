@@ -150,12 +150,6 @@ exports.createBlog = asyncHandler(async (req, res, next) => {
   });
 });
 
-  res.status(201).json({
-    success: true,
-    data: blog
-  });
-});
-
 // @desc    Update a blog post (Admin only)
 // @route   PUT /api/blogs/:id
 // @access  Private
