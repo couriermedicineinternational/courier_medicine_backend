@@ -10,6 +10,17 @@ const asyncHandler = require('../middlewares/asyncHandler');
 exports.getBlogs = asyncHandler(async (req, res, next) => {
   const filter = { isDeleted: false };
 
+  // Ensure all existing blogs have a sequential serial blogId (1, 2, 3...)
+  const unassignedBlogs = await BlogPost.find({ blogId: { $exists: false } }).sort({ createdAt: 1 });
+  if (unassignedBlogs.length > 0) {
+    const highestBlog = await BlogPost.findOne({ blogId: { $exists: true } }).sort({ blogId: -1 });
+    let startId = (highestBlog && highestBlog.blogId) ? highestBlog.blogId + 1 : 1;
+    for (const b of unassignedBlogs) {
+      b.blogId = startId++;
+      await b.save();
+    }
+  }
+
   // Public views only published blogs, admin can see all
   if (!req.query.all || req.query.all !== 'true') {
     filter.isPublished = true;
@@ -53,17 +64,19 @@ exports.getBlogs = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Get single blog by slug or _id and increment views (Public)
+// @desc    Get single blog by blogId (numeric), slug, or _id and increment views (Public)
 // @route   GET /api/blogs/:slug
 // @access  Public
 exports.getBlogBySlug = asyncHandler(async (req, res, next) => {
   const param = req.params.slug;
   const isObjectId = mongoose.Types.ObjectId.isValid(param);
+  const isNumeric = !isNaN(param) && !isNaN(parseFloat(param));
 
   const filter = {
     isDeleted: false,
     $or: [
       { slug: param.toLowerCase() },
+      ...(isNumeric ? [{ blogId: parseInt(param, 10) }] : []),
       ...(isObjectId ? [{ _id: param }] : [])
     ]
   };
@@ -107,7 +120,12 @@ exports.createBlog = asyncHandler(async (req, res, next) => {
     return next(new AppError('A blog with a similar title/slug already exists', 400));
   }
 
+  // Generate next serial blogId
+  const maxBlog = await BlogPost.findOne({ blogId: { $exists: true } }).sort({ blogId: -1 });
+  const nextBlogId = (maxBlog && maxBlog.blogId) ? maxBlog.blogId + 1 : 1;
+
   const blog = await BlogPost.create({
+    blogId: nextBlogId,
     title,
     slug,
     excerpt,
@@ -123,6 +141,12 @@ exports.createBlog = asyncHandler(async (req, res, next) => {
     sections: sections || [],
     tip: tip || ''
   });
+
+  res.status(201).json({
+    success: true,
+    data: blog
+  });
+});
 
   res.status(201).json({
     success: true,

@@ -8,6 +8,9 @@ const mongoose = require('mongoose');
  */
 const BlogPostSchema = new mongoose.Schema(
   {
+    blogId: {
+      type: Number,
+    },
     title: {
       type: String,
       required: [true, 'Title is required'],
