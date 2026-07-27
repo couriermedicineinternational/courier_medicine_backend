@@ -104,17 +104,19 @@ exports.getBlogBySlug = asyncHandler(async (req, res, next) => {
 // @route   POST /api/blogs
 // @access  Private
 exports.createBlog = asyncHandler(async (req, res, next) => {
-  const { title, excerpt, content, image, author, category, tags, readTime, isPublished, introParagraph, sections, tip } = req.body;
+  const { title, slug: customSlug, excerpt, content, image, author, category, tags, readTime, isPublished, introParagraph, sections, tip } = req.body;
 
   if (!title || !excerpt || !content) {
     return next(new AppError('Please provide title, excerpt, and content', 400));
   }
 
-  // Generate slug
-  const slug = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '');
+  // Generate or use custom slug
+  const slug = customSlug
+    ? customSlug.toLowerCase().trim()
+    : title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
 
   // Check if slug exists
   const slugExists = await BlogPost.findOne({ slug, isDeleted: false });
@@ -160,10 +162,14 @@ exports.updateBlog = asyncHandler(async (req, res, next) => {
     return next(new AppError(`Blog not found with id of ${req.params.id}`, 404));
   }
 
-  const { title, excerpt, content, image, author, category, tags, readTime, isPublished, introParagraph, sections, tip } = req.body;
+  const { title, slug: customSlug, excerpt, content, image, author, category, tags, readTime, isPublished, introParagraph, sections, tip } = req.body;
 
   if (title) {
     blog.title = title;
+  }
+  if (customSlug) {
+    blog.slug = customSlug.toLowerCase().trim();
+  } else if (title && !blog.slug) {
     blog.slug = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
