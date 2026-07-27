@@ -37,6 +37,18 @@ const HomepageSectionSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true
+    },
+    metaViewTitle: {
+      type: String,
+      trim: true
+    },
+    metaKeywords: {
+      type: String,
+      trim: true
+    },
+    metaDescription: {
+      type: String,
+      trim: true
     }
   },
   {

@@ -30,10 +30,8 @@ const SiteSettingsSchema = new mongoose.Schema(
       trim: true,
     },
     socialLinks: {
-      facebook: { type: String, trim: true },
       instagram: { type: String, trim: true },
       youtube: { type: String, trim: true },
-      twitter: { type: String, trim: true },
     },
     aboutText: {
       type: String,

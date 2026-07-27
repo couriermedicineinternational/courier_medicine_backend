@@ -17,6 +17,18 @@ const BlogHeaderSchema = new mongoose.Schema(
     bgImage: {
       type: String,
       default: "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80",
+    },
+    metaViewTitle: {
+      type: String,
+      trim: true,
+    },
+    metaKeywords: {
+      type: String,
+      trim: true,
+    },
+    metaDescription: {
+      type: String,
+      trim: true,
     }
   },
   { timestamps: true }

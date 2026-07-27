@@ -121,7 +121,7 @@ exports.getFAQHeader = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/faqs/header
 // @access  Private (Admin)
 exports.updateFAQHeader = asyncHandler(async (req, res, next) => {
-  const { title, bgImage } = req.body;
+  const { title, bgImage, metaViewTitle, metaKeywords, metaDescription } = req.body;
 
   let header = await FaqHeader.findOne();
 
@@ -131,6 +131,9 @@ exports.updateFAQHeader = asyncHandler(async (req, res, next) => {
 
   if (title !== undefined) header.title = title;
   if (bgImage !== undefined) header.bgImage = bgImage;
+  if (metaViewTitle !== undefined) header.metaViewTitle = metaViewTitle;
+  if (metaKeywords !== undefined) header.metaKeywords = metaKeywords;
+  if (metaDescription !== undefined) header.metaDescription = metaDescription;
 
   await header.save();
 

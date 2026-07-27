@@ -35,7 +35,7 @@ exports.getHomepageSectionsAdmin = asyncHandler(async (req, res, next) => {
 // @access  Private (Admin)
 exports.updateHomepageSection = asyncHandler(async (req, res, next) => {
   const { key } = req.params;
-  const { title, subtitle, content, sortOrder, isActive } = req.body;
+  const { title, subtitle, content, sortOrder, isActive, metaViewTitle, metaKeywords, metaDescription } = req.body;
 
   let section = await HomepageSection.findOne({ key: key.toLowerCase().trim() });
 
@@ -51,6 +51,9 @@ exports.updateHomepageSection = asyncHandler(async (req, res, next) => {
   }
   if (sortOrder !== undefined) section.sortOrder = sortOrder;
   if (isActive !== undefined) section.isActive = isActive;
+  if (metaViewTitle !== undefined) section.metaViewTitle = metaViewTitle;
+  if (metaKeywords !== undefined) section.metaKeywords = metaKeywords;
+  if (metaDescription !== undefined) section.metaDescription = metaDescription;
 
   await section.save();
 

@@ -113,6 +113,23 @@ const CountrySchema = new mongoose.Schema(
     faq10Q: { type: String, default: "" },
     faq10A: { type: String, default: "" },
 
+    // Popular Services Section CMS Fields
+    popularServicesTitle: { type: String, default: "" },
+    popularService1Text: { type: String, default: "" },
+    popularService2Text: { type: String, default: "" },
+
+    // Gradient Banner CMS Fields
+    bannerTitle: { type: String, default: "" },
+    bannerBullet1: { type: String, default: "" },
+    bannerBullet2: { type: String, default: "" },
+    bannerBullet3: { type: String, default: "" },
+    bannerBullet4: { type: String, default: "" },
+
+    // Document Note & Custom Duty CMS Fields
+    docNote: { type: String, default: "" },
+    customDutyHeading: { type: String, default: "" },
+    customDutyDisclaimer: { type: String, default: "" },
+
     // Soft-delete fields
     isDeleted: {
       type: Boolean,

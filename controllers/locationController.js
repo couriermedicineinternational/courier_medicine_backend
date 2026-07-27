@@ -18,11 +18,34 @@ exports.getLocations = asyncHandler(async (req, res, next) => {
     filter.country = req.query.country;
   }
 
+  // Check if pagination is specifically requested or limit is set
+  if (req.query.page || (req.query.limit && req.query.limit !== '1000')) {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 25;
+    const skip = (page - 1) * limit;
+
+    const total = await Location.countDocuments(filter);
+    const locations = await Location.find(filter)
+      .sort({ city: 1, name: 1 })
+      .skip(skip)
+      .limit(limit);
+
+    return res.status(200).json({
+      success: true,
+      count: locations.length,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+      data: locations
+    });
+  }
+
   const locations = await Location.find(filter).sort({ city: 1, name: 1 });
 
   res.status(200).json({
     success: true,
     count: locations.length,
+    total: locations.length,
     data: locations
   });
 });
@@ -109,7 +132,7 @@ exports.createLocation = asyncHandler(async (req, res, next) => {
     'locationId', 'city', 'country', 'name', 'slug', 'isActive',
     'metaViewTitle', 'metaKeywords', 'metaDescription',
     'processImage1', 'processImage2', 'processImage3', 'processImage4', 'processImage5', 'documentImage',
-    'pricingMatrix', 'medicineCourierServices', 'documentsNeeded', 'servicesWeOffer', 'process1', 'process2', 'faq', 'faqHeading', 'faq1Q', 'faq1A', 'faq2Q', 'faq2A', 'faq3Q', 'faq3A', 'faq4Q', 'faq4A', 'faq5Q', 'faq5A', 'faq6Q', 'faq6A', 'faq7Q', 'faq7A', 'faq8Q', 'faq8A', 'faq9Q', 'faq9A', 'faq10Q', 'faq10A'
+    'pricingMatrix', 'introHeading', 'medicineCourierServices', 'docHeading', 'documentsNeeded', 'serviceHeading', 'servicesWeOffer', 'pickupServiceTitle', 'pickupServiceContent', 'procurementServiceTitle', 'procurementServiceContent', 'processHeading', 'process1Title', 'process1', 'process2Title', 'process2', 'faq', 'faqHeading', 'faq1Q', 'faq1A', 'faq2Q', 'faq2A', 'faq3Q', 'faq3A', 'faq4Q', 'faq4A', 'faq5Q', 'faq5A', 'faq6Q', 'faq6A', 'faq7Q', 'faq7A', 'faq8Q', 'faq8A', 'faq9Q', 'faq9A', 'faq10Q', 'faq10A'
   ];
 
   const locationData = {};
@@ -168,7 +191,7 @@ exports.updateLocation = asyncHandler(async (req, res, next) => {
     'locationId', 'city', 'country', 'name', 'slug', 'isActive',
     'metaViewTitle', 'metaKeywords', 'metaDescription',
     'processImage1', 'processImage2', 'processImage3', 'processImage4', 'processImage5', 'documentImage',
-    'pricingMatrix', 'medicineCourierServices', 'documentsNeeded', 'servicesWeOffer', 'process1', 'process2', 'faq', 'faqHeading', 'faq1Q', 'faq1A', 'faq2Q', 'faq2A', 'faq3Q', 'faq3A', 'faq4Q', 'faq4A', 'faq5Q', 'faq5A', 'faq6Q', 'faq6A', 'faq7Q', 'faq7A', 'faq8Q', 'faq8A', 'faq9Q', 'faq9A', 'faq10Q', 'faq10A'
+    'pricingMatrix', 'introHeading', 'medicineCourierServices', 'docHeading', 'documentsNeeded', 'serviceHeading', 'servicesWeOffer', 'pickupServiceTitle', 'pickupServiceContent', 'procurementServiceTitle', 'procurementServiceContent', 'processHeading', 'process1Title', 'process1', 'process2Title', 'process2', 'faq', 'faqHeading', 'faq1Q', 'faq1A', 'faq2Q', 'faq2A', 'faq3Q', 'faq3A', 'faq4Q', 'faq4A', 'faq5Q', 'faq5A', 'faq6Q', 'faq6A', 'faq7Q', 'faq7A', 'faq8Q', 'faq8A', 'faq9Q', 'faq9A', 'faq10Q', 'faq10A'
   ];
 
   updatableFields.forEach(field => {

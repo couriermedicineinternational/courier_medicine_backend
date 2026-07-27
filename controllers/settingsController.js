@@ -17,10 +17,8 @@ exports.getSettings = asyncHandler(async (req, res, next) => {
       workingHours: 'Mon - Sat 09:00 - 19:00',
       address: 'Shop No. 7, 1st Floor, Market, Block C, Nizamuddin West, New Delhi, Delhi-110013',
       socialLinks: {
-        facebook: '',
         instagram: '',
-        youtube: '',
-        twitter: ''
+        youtube: ''
       },
       aboutText: 'Courier Medicines Offers Free Pick Up Service All Across India with providing Medicine Procurement Facilities also...',
       copyright: '2024 © All Rights Reserved, Courier Services'
@@ -68,10 +66,8 @@ exports.updateSettings = asyncHandler(async (req, res, next) => {
   if (socialLinks) {
     const existingLinks = settings.socialLinks || {};
     settings.socialLinks = {
-      facebook: socialLinks.facebook !== undefined ? socialLinks.facebook : existingLinks.facebook,
       instagram: socialLinks.instagram !== undefined ? socialLinks.instagram : existingLinks.instagram,
-      youtube: socialLinks.youtube !== undefined ? socialLinks.youtube : existingLinks.youtube,
-      twitter: socialLinks.twitter !== undefined ? socialLinks.twitter : existingLinks.twitter
+      youtube: socialLinks.youtube !== undefined ? socialLinks.youtube : existingLinks.youtube
     };
   }
 

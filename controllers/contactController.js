@@ -315,7 +315,7 @@ exports.getContactSectionsAdmin = asyncHandler(async (req, res, next) => {
 // @access  Private (Admin)
 exports.updateContactSection = asyncHandler(async (req, res, next) => {
   const { key } = req.params;
-  const { title, subtitle, content, sortOrder, isActive } = req.body;
+  const { title, subtitle, content, sortOrder, isActive, metaViewTitle, metaKeywords, metaDescription } = req.body;
 
   let section = await ContactSection.findOne({ key: key.toLowerCase().trim() });
 
@@ -328,6 +328,9 @@ exports.updateContactSection = asyncHandler(async (req, res, next) => {
   if (content !== undefined) section.content = content;
   if (sortOrder !== undefined) section.sortOrder = sortOrder;
   if (isActive !== undefined) section.isActive = isActive;
+  if (metaViewTitle !== undefined) section.metaViewTitle = metaViewTitle;
+  if (metaKeywords !== undefined) section.metaKeywords = metaKeywords;
+  if (metaDescription !== undefined) section.metaDescription = metaDescription;
 
   await section.save();
 

@@ -242,7 +242,7 @@ exports.getBlogHeader = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/blogs/header
 // @access  Private (Admin)
 exports.updateBlogHeader = asyncHandler(async (req, res, next) => {
-  const { title, subtitle, tag, bgImage } = req.body;
+  const { title, subtitle, tag, bgImage, metaViewTitle, metaKeywords, metaDescription } = req.body;
 
   let header = await BlogHeader.findOne();
 
@@ -254,6 +254,9 @@ exports.updateBlogHeader = asyncHandler(async (req, res, next) => {
   if (subtitle !== undefined) header.subtitle = subtitle;
   if (tag !== undefined) header.tag = tag;
   if (bgImage !== undefined) header.bgImage = bgImage;
+  if (metaViewTitle !== undefined) header.metaViewTitle = metaViewTitle;
+  if (metaKeywords !== undefined) header.metaKeywords = metaKeywords;
+  if (metaDescription !== undefined) header.metaDescription = metaDescription;
 
   await header.save();
 

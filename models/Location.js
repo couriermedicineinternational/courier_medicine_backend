@@ -58,11 +58,21 @@ const LocationSchema = new mongoose.Schema(
       }
     ],
     
-    // Rich Text Content
+    // Rich Text Content & Section Headings
+    introHeading: { type: String, default: "" },
     medicineCourierServices: { type: String, default: "" },
+    docHeading: { type: String, default: "" },
     documentsNeeded: { type: String, default: "" },
+    serviceHeading: { type: String, default: "" },
     servicesWeOffer: { type: String, default: "" },
+    pickupServiceTitle: { type: String, default: "" },
+    pickupServiceContent: { type: String, default: "" },
+    procurementServiceTitle: { type: String, default: "" },
+    procurementServiceContent: { type: String, default: "" },
+    processHeading: { type: String, default: "" },
+    process1Title: { type: String, default: "" },
     process1: { type: String, default: "" },
+    process2Title: { type: String, default: "" },
     process2: { type: String, default: "" },
     faq: { type: String, default: "" },
     faqHeading: { type: String, default: "" },
