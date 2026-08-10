@@ -98,6 +98,23 @@ app.get('/', (req, res) => {
   });
 });
 
+// Serve robots.txt & sitemap.xml for SEO crawlers
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`User-agent: *\n\nSitemap: https://couriermedicines.com/sitemap.xml`);
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  const sitemapPath = path.join(__dirname, '../courier-medicine/public/sitemap.xml');
+  const fs = require('fs');
+  if (fs.existsSync(sitemapPath)) {
+    res.type('application/xml');
+    res.sendFile(sitemapPath);
+  } else {
+    res.status(404).send('Sitemap not found');
+  }
+});
+
 // Catch-all route (404)
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
