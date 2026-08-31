@@ -115,6 +115,11 @@ app.get('/sitemap.xml', (req, res) => {
   }
 });
 
+app.get('/googlef5645ebef820ac0a.html', (req, res) => {
+  res.type('text/html');
+  res.send('google-site-verification: googlef5645ebef820ac0a.html');
+});
+
 // Catch-all route (404)
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
