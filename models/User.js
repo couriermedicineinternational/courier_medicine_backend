@@ -81,12 +81,12 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
 // Instance method — generate a signed JWT token
 // ---------------------------------------------------------------------------
 UserSchema.methods.getSignedJwtToken = function () {
-  const expiry = process.env.JWT_EXPIRE || process.env.JWT_EXPIRES_IN || '7d';
+  const secret = process.env.JWT_SECRET || 'courier-med-secret-key-2026-change-in-production';
   return jwt.sign(
     { id: this._id },
-    process.env.JWT_SECRET || 'courier-med-secret-key-2026-change-in-production',
+    secret,
     {
-      expiresIn: String(expiry || '7d'),
+      expiresIn: '30d',
     }
   );
 };
